@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sucumberf World - All Games in One</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-image: url('https://thumb.ac-illust.com/8f/8f9206971de5e7cb01d2a1707f11ee73_t.jpeg'); /* Replace with your background image */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        h1, h2 {
+            color: black; /* Changed the color to black */
+        }
+        h1 {
+            font-size: 3em;
+            margin-top: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow for black text */
+        }
+        h2 {
+            font-size: 2em;
+        }
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Two buttons per row */
+            grid-template-rows: auto;
+            gap: 30px; /* Space between buttons */
+            justify-content: center;
+            padding: 40px;
+        }
+        .center {
+            grid-column: 1 / span 2; /* Make the third button span across two columns */
+            justify-self: center;
+        }
+        .game-button {
+            position: relative;
+            width: 350px;
+            height: 200px;
+            margin: 0 auto;
+            border: none;
+            cursor: pointer;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s;
+        }
+        .game-button:hover {
+            transform: scale(1.05);
+        }
+        .game-button span {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            color: white;
+            font-size: 1.5em;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 5px 0;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        @media (max-width: 768px) {
+            .game-container {
+                grid-template-columns: 1fr; /* Stack buttons vertically on smaller screens */
+            }
+            .center {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Sucumberf World</h1>
+    <h2>.</h2>
+
+    <div class="game-container">
+        <!-- Game 1: Hello Kitty -->
+        <a href="hello kitty.html" class="game-button" style="background-image: url('https://i.ytimg.com/vi/1Ad-ZNgXkKk/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgQShPMA8=&rs=AOn4CLAhPtxL4MWfRXe0fQ_qICa1uCR-Bw');">
+            <span>Hello Kitty</span>
+        </a>
+
+        <!-- Game 2: Angry Birds -->
+        <a href="angrybird.html" class="game-button" style="background-image: url('https://c.files.bbci.co.uk/9CC0/production/_129382104_capture.jpg');">
+            <span>Angry Birds</span>
+        </a>
+
+        <!-- Game 3: Spider-Man (centered) -->
+        <a href="spider.html" class="game-button center" style="background-image: url('https://preview.redd.it/u55el6zy6f691.jpg?auto=webp&s=9e2f9315b69b270a8d0d52302caea1f6f061b789');">
+            <span>Spider-Man</span>
+        </a>
+
+        <!-- Game 4: Tom and Jerry -->
+        <a href="tom.html" class="game-button" style="background-image: url('https://preview.redd.it/tom-jerry-feedback-and-testing-appreciated-v0-tyxv7vw451tc1.png?width=640&crop=smart&auto=webp&s=4026168201e5e0da75ea46f5abbd5008361776cf');">
+            <span>Tom and Jerry</span>
+        </a>
+
+        <!-- Game 5: Doraemon -->
+        <a href="doramon.html" class="game-button" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzDx-QOKawjZyesKvxQksW9jZAvcQ0_LfYLg&s');">
+            <span>Doraemon</span>
+        </a>
+    </div>
+
+</body>
+</html>

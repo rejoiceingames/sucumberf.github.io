@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello Kitty Racing Game</title>
+  <style>
+    /* Your existing CSS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: white; /* Light pink background */
+      background-image: url('https://i.etsystatic.com/49105148/r/il/cd21e7/5739153656/il_300x300.5739153656_ftqs.jpg');
+    }
+    #game-container {
+      border: 8px solid #800000; /* Hello Kitty pink border */
+      width: 400px;
+      height: 600px;
+      position: relative;
+      overflow: hidden;
+      background-color: white; /* Light pastel pink */
+    }
+    #scoreboard {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #C4A484; /* Pink text */
+      font-size: 20px;
+      font-family: 'Comic Sans MS', cursive, sans-serif; /* Playful font */
+      z-index: 10;
+    }
+    #game-over {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #C4A484; /* Pink text */
+      text-align: center;
+    }
+    #restart-btn {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #C4A484; /* Pink button */
+      border: none;
+      cursor: pointer;
+      color: white;
+      margin-top: 10px;
+    }
+    #restart-btn:hover {
+      background-color: #C4A484; /* Lighter pink */
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="game-container">
+    <div id="scoreboard">Score: 0</div>
+    <canvas id="gameCanvas"></canvas>
+    <div id="game-over">
+      <h1>Game Over</h1>
+      <p>Your Score: <span id="final-score"></span></p>
+      <button id="restart-btn">Restart</button>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreboard = document.getElementById('scoreboard');
+    const gameOverScreen = document.getElementById('game-over');
+    const finalScoreEl = document.getElementById('final-score');
+    const restartBtn = document.getElementById('restart-btn');
+
+    canvas.width = 400;
+    canvas.height = 600;
+
+    let snake = [{ x: 190, y: 500, width: 50, height: 50 }];
+    let gameOver = false;
+    let score = 0;
+    let speed = 5;
+    let direction = null;
+    let obstacles = [];
+    let obstacleSpeed = 3;
+    let obstacleGenerationRate = 0.02;
+    let distanceTraveled = 0;
+
+    const helloKittyImg = new Image();
+    helloKittyImg.src = 'https://i.pinimg.com/originals/64/5f/d9/645fd98adba55582c6851985779fcb0e.png';
+
+    const bowImg = new Image();
+    bowImg.src = 'https://i.pinimg.com/736x/54/a3/e5/54a3e5f67177d32f6689f69aaeee3ed8.jpg';
+
+    // Mobile touch controls
+    canvas.addEventListener('touchstart', handleTouchStart);
+    canvas.addEventListener('touchend', handleTouchEnd);
+
+    function handleTouchStart(e) {
+      const touchX = e.touches[0].clientX;
+      const rect = canvas.getBoundingClientRect();
+      const canvasX = touchX - rect.left;
+
+      if (canvasX < canvas.width / 2) {
+        direction = 'left';
+      } else {
+        direction = 'right';
+      }
+    }
+
+    function handleTouchEnd() {
+      direction = null;
+    }
+
+    // Desktop mouse controls
+    canvas.addEventListener('mousedown', handleMouseClick);
+
+    function handleMouseClick(e) {
+      const clickX = e.clientX;
+      const rect = canvas.getBoundingClientRect();
+      const canvasX = clickX - rect.left;
+
+      if (canvasX < canvas.width / 2) {
+        direction = 'left';
+      } else {
+        direction = 'right';
+      }
+    }
+
+    canvas.addEventListener('mouseup', () => {
+      direction = null;
+    });
+
+    // Keyboard controls for desktop
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        direction = 'left';
+      } else if (e.key === 'ArrowRight') {
+        direction = 'right';
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        direction = null;
+      }
+    });
+
+    function drawSnake() {
+      snake.forEach(part => {
+        ctx.drawImage(helloKittyImg, part.x, part.y, part.width, part.height);
+      });
+    }
+
+    function updateSnakePosition() {
+      if (direction) {
+        let head = { ...snake[0] };
+
+        if (direction === 'left') {
+          head.x -= speed;
+        } else if (direction === 'right') {
+          head.x += speed;
+        }
+
+        if (head.x < 0) head.x = 0;
+        if (head.x + head.width > canvas.width) head.x = canvas.width - head.width;
+
+        snake.unshift(head);
+        snake.pop();
+      }
+
+      distanceTraveled += obstacleSpeed;
+      score = Math.floor(distanceTraveled / 10);
+      scoreboard.textContent = 'Score: ' + score;
+
+      if (score >= 500 && score % 500 === 0) {
+        speed += 1;
+        obstacleSpeed += 0.5;
+      }
+    }
+
+    function createObstacle() {
+      let width = 50;
+      let height = 50;
+      let x = Math.random() * (canvas.width - width);
+      obstacles.push({ x, y: -height, width, height });
+    }
+
+    function drawObstacles() {
+      obstacles.forEach(obstacle => {
+        ctx.drawImage(bowImg, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        obstacle.y += obstacleSpeed;
+      });
+    }
+
+    function checkCollision() {
+      obstacles.forEach(obstacle => {
+        if (snake[0].x < obstacle.x + obstacle.width &&
+            snake[0].x + snake[0].width > obstacle.x &&
+            snake[0].y < obstacle.y + obstacle.height &&
+            snake[0].y + snake[0].height > obstacle.y) {
+          gameOver = true;
+          endGame();
+        }
+      });
+    }
+
+    function endGame() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      gameOverScreen.style.display = 'block';
+      finalScoreEl.textContent = score;
+    }
+
+    restartBtn.addEventListener('click', () => {
+      gameOverScreen.style.display = 'none';
+      score = 0;
+      distanceTraveled = 0;
+      snake = [{ x: 190, y: 500, width: 50, height: 50 }];
+      obstacles = [];
+      direction = null;
+      gameOver = false;
+      scoreboard.textContent = 'Score: 0';
+      speed = 5;
+      obstacleSpeed = 3;
+      gameLoop();
+    });
+
+    function gameLoop() {
+      if (gameOver) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      updateSnakePosition();
+      drawSnake();
+
+      if (Math.random() < obstacleGenerationRate) {
+        createObstacle();
+      }
+
+      drawObstacles();
+      checkCollision();
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+
+  </script>
+
+</body>
+</html>
